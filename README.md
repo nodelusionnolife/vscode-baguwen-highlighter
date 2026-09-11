@@ -61,7 +61,6 @@ code --install-extension baguwen-highlighter-1.2.0.vsix
 | 高频虚词·程度·模糊词 | `baguwen.function` | 开 | 极其、一丝、某种、仿佛、现在、确实、结构、状态 |
 | 符号增殖 | `baguwen.punct` | 开 | ………、！！！、？？？、,,,、—— |
 
-最后两类命中的是"极其""仿佛""现在"这种高频虚词，在普通中文里密度很高，视觉上比其它类略靠后（冷色 / 亮灰）。它们的词表条目一个不少——**词表里有的词不亮，会被当成扩展没生效**，这是 v1.3.0 修掉的一个坑。
 
 觉得干扰时可以收起来：装饰器模式在设置里取消勾选 `baguwen.categories.function` / `.punct`；原生模式跑 `npm run build:grammar -- --default-only` 重新生成语法后重装。
 
