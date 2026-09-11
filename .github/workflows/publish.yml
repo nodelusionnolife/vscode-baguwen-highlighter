@@ -1,0 +1,36 @@
+name: Publish Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 安装依赖
+        run: npm ci || npm install
+
+      - name: 校验生成的语法与词表数据一致
+        run: |
+          npm run build:grammar
+          git diff --exit-code syntaxes/ || {
+            echo "::error::syntaxes/ 与 src/data/baguwen.js 不一致，请本地运行 npm run build:grammar 后提交";
+            exit 1;
+          }
+
+      - name: 跑测试
+        run: npm test
+
+      - name: 发布到 VS Code Marketplace
+        run: npx @vscode/vsce publish --no-dependencies -p "$VSCE_PAT"
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}

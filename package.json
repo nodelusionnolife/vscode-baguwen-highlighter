@@ -1,0 +1,245 @@
+{
+  "name": "baguwen-highlighter",
+  "displayName": "八股词表高亮",
+  "description": "自动高亮文本中的八股（AI 味）固定句式、关联词、陈词滥调短语与词库。默认使用 VS Code 原生 TextMate 语法，启用即生效。",
+  "version": "1.6.0",
+  "publisher": "local",
+  "repository": { "type": "git", "url": "https://github.com/nodelusionnolife/vscode-baguwen-highlighter.git" },
+  "bugs": { "url": "https://github.com/nodelusionnolife/vscode-baguwen-highlighter/issues" },
+  "homepage": "https://github.com/nodelusionnolife/vscode-baguwen-highlighter#readme",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "八股",
+    "AI味",
+    "写作",
+    "highlight",
+    "lorebook"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "grammars": [
+      {
+        "scopeName": "source.baguwen",
+        "path": "./syntaxes/baguwen.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown",
+          "text.html.derivative",
+          "source.json",
+          "source.yaml",
+          "text.xml",
+          "source.rst",
+          "text.log",
+          "source.ini",
+          "text.git-commit",
+          "text.tex.latex",
+          "source.dotenv",
+          "source.makefile",
+          "source.diff",
+          "text.html.handlebars",
+          "text.plain"
+        ]
+      },
+      {
+        "language": "plaintext",
+        "scopeName": "source.baguwen.plaintext",
+        "path": "./syntaxes/baguwen-plaintext.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          { "scope": "baguwen.pattern", "settings": { "foreground": "#c678dd", "fontStyle": "bold underline" } },
+          { "scope": "baguwen.cliche", "settings": { "foreground": "#ff5555" } },
+          { "scope": "baguwen.phrase", "settings": { "foreground": "#ffb86c" } },
+          { "scope": "baguwen.emotion", "settings": { "foreground": "#8be9fd" } },
+          { "scope": "baguwen.metaphor", "settings": { "foreground": "#a3f76a" } },
+          { "scope": "baguwen.anatomy", "settings": { "foreground": "#50fa7b" } },
+          { "scope": "baguwen.env", "settings": { "foreground": "#4ec9b0" } },
+          { "scope": "baguwen.dialogue", "settings": { "foreground": "#ff8a5c" } },
+          { "scope": "baguwen.myth", "settings": { "foreground": "#ff5fa2" } },
+          { "scope": "baguwen.number", "settings": { "foreground": "#f1fa8c" } },
+          { "scope": "baguwen.function", "settings": { "foreground": "#6fb8ff" } },
+          { "scope": "baguwen.punct", "settings": { "foreground": "#b0b8c4" } },
+          { "scope": "baguwen.r18", "settings": { "foreground": "#ff8fc7" } }
+        ]
+      }
+    },
+    "commands": [
+      {
+        "command": "baguwen.toggle",
+        "title": "八股高亮: 开 / 关（装饰器模式）"
+      },
+      {
+        "command": "baguwen.rescan",
+        "title": "八股高亮: 重新扫描当前文件"
+      },
+      {
+        "command": "baguwen.report",
+        "title": "八股高亮: 输出当前文件命中报告"
+      },
+      {
+        "command": "baguwen.showOutput",
+        "title": "八股高亮: 显示输出面板"
+      },
+      {
+        "command": "baguwen.applyPalette",
+        "title": "八股高亮: 把配色写入用户设置（可选）"
+      }
+    ],
+    "configuration": {
+      "title": "八股词表高亮",
+      "properties": {
+        "baguwen.engine": {
+          "type": "string",
+          "enum": [
+            "native",
+            "decoration",
+            "both"
+          ],
+          "enumDescriptions": [
+            "原生：用 TextMate 注入语法 + tokenColorCustomizations 上色，零运行时开销，装好启用即生效（默认）",
+            "装饰器：扩展运行时扫描并加波浪线，支持逐类别开关与自定义颜色",
+            "两者同时启用：原生上色 + 装饰器下划线"
+          ],
+          "default": "native",
+          "markdownDescription": "高亮引擎。`native` 不需要扩展在运行时做任何事，由 VS Code 语法引擎直接产出高亮；`decoration` 才支持逐类别开关、`ignore` 忽略词、按类别自定义颜色这些动态配置。改这个值后需要重新加载窗口。"
+        },
+        "baguwen.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "装饰器模式的总开关。原生模式请用扩展面板启用/禁用。"
+        },
+        "baguwen.languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "装饰器模式下只在这些语言中高亮。留空 `[]` 表示所有语言。"
+        },
+        "baguwen.style": {
+          "type": "string",
+          "enum": [
+            "underline",
+            "background",
+            "both"
+          ],
+          "default": "both",
+          "description": "装饰器模式的高亮样式：波浪下划线 / 背景色 / 两者。"
+        },
+        "baguwen.maxFileSizeKB": {
+          "type": "number",
+          "default": 2048,
+          "description": "装饰器模式下超过此大小（KB）的文件只扫描可见区域。"
+        },
+        "baguwen.debounceMs": {
+          "type": "number",
+          "default": 200,
+          "description": "装饰器模式下编辑后延迟多少毫秒重新扫描。"
+        },
+        "baguwen.overviewRuler": {
+          "type": "boolean",
+          "default": true,
+          "description": "装饰器模式下在概览标尺显示命中位置。"
+        },
+        "baguwen.ignore": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "装饰器模式下不参与高亮的词（精确匹配整个词）。原生语法是静态的，不受此项影响。"
+        },
+        "baguwen.colors": {
+          "type": "object",
+          "default": {},
+          "markdownDescription": "装饰器模式下按类别覆盖颜色。原生模式的颜色请在 `editor.tokenColorCustomizations` 里改 `baguwen.*` scope。"
+        },
+        "baguwen.categories.pattern": {
+          "type": "boolean",
+          "default": true,
+          "description": "结构句式 / 关联词（不是…而是…、与其说…不如说… 等）"
+        },
+        "baguwen.categories.cliche": {
+          "type": "boolean",
+          "default": true,
+          "description": "陈词滥调名场面句（骨节分明的手指、嘴角勾起…弧度、眼神暗了暗 等）"
+        },
+        "baguwen.categories.phrase": {
+          "type": "boolean",
+          "default": true,
+          "description": "替换池固定短语（眼神 / 睫毛 / 呼吸 / 身体 / 声音 / 心理独白 等）"
+        },
+        "baguwen.categories.emotion": {
+          "type": "boolean",
+          "default": true,
+          "description": "情绪 · 状态词（战栗、瑟缩、疯癫、虚无、湮灭 等）"
+        },
+        "baguwen.categories.metaphor": {
+          "type": "boolean",
+          "default": true,
+          "description": "比喻锚点 · 动物塑（石子投湖、如手术刀般精准、像受惊的猫 等）"
+        },
+        "baguwen.categories.anatomy": {
+          "type": "boolean",
+          "default": true,
+          "description": "人体 · 解剖词（头颅、躯体、脊背、颧骨、肱二头肌 等）"
+        },
+        "baguwen.categories.env": {
+          "type": "boolean",
+          "default": true,
+          "description": "环境模板句（光线斜切进来、阴影浓稠如墨、空气里浮着 等）"
+        },
+        "baguwen.categories.dialogue": {
+          "type": "boolean",
+          "default": true,
+          "description": "对话 · “说”字替换库（他开口、从喉咙里碾出来、语气平平 等）"
+        },
+        "baguwen.categories.myth": {
+          "type": "boolean",
+          "default": true,
+          "description": "狩猎 · 宗教 · 史诗 · 命运（猎人猎物、献祭、命运的齿轮 等）"
+        },
+        "baguwen.categories.number": {
+          "type": "boolean",
+          "default": true,
+          "description": "伪精确数字（十五度、1.5秒、瞳孔放大两毫米 等）"
+        },
+        "baguwen.categories.function": {
+          "type": "boolean",
+          "default": true,
+          "description": "高频虚词 / 程度 / 模糊词（极其、一丝、某种、仿佛、现在、确实 等）。命中密度高，但配色是低饱和灰、视觉上靠后；觉得干扰可取消勾选。"
+        },
+        "baguwen.categories.punct": {
+          "type": "boolean",
+          "default": true,
+          "description": "符号增殖（………、！！！、？？？、,,,）。同样是低饱和灰。"
+        },
+        "baguwen.categories.r18": {
+          "type": "boolean",
+          "default": true,
+          "description": "R18 / 亲密场景术语（第一版第 4 条）。涉亲密场景才需要，可单独关闭。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build:grammar": "node scripts/build-grammar.js",
+    "test": "node test/run.js && node test/extension-smoke.js && node test/grammar.js && node test/coverage.js && node test/user-terms.js && node test/rule-coverage.js",
+    "report": "node cli.js"
+  },
+  "devDependencies": {
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.3.2"
+  }
+}

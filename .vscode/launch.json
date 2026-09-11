@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "运行扩展（F5）",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--disable-extension=augment.vscode-augment",
+        "${workspaceFolder}/sample/八股样例.md"
+      ]
+    }
+  ]
+}

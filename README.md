@@ -30,7 +30,7 @@ npx @vscode/vsce package
 code --install-extension baguwen-highlighter-1.2.0.vsix
 ```
 
-装完重启 VS Code，打开任意 markdown 文件即可看到高亮。
+装完重启 VS Code，打开任意 markdown 文件即可看到高亮——**不需要按 F5**。
 
 ### 开发调试（F5）
 
