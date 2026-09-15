@@ -2,14 +2,18 @@
   "name": "baguwen-highlighter",
   "displayName": "八股词表高亮",
   "description": "自动高亮文本中的八股（AI 味）固定句式、关联词、陈词滥调短语与词库。默认使用 VS Code 原生 TextMate 语法，启用即生效。",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "publisher": "local",
-  "repository": { "type": "git", "url": "https://github.com/nodelusionnolife/vscode-baguwen-highlighter.git" },
-  "bugs": { "url": "https://github.com/nodelusionnolife/vscode-baguwen-highlighter/issues" },
-  "homepage": "https://github.com/nodelusionnolife/vscode-baguwen-highlighter#readme",
+  "repository": { "type": "git", "url": "https://github.com/YOUR_GITHUB_USERNAME/baguwen-highlighter.git" },
+  "bugs": { "url": "https://github.com/YOUR_GITHUB_USERNAME/baguwen-highlighter/issues" },
+  "homepage": "https://github.com/YOUR_GITHUB_USERNAME/baguwen-highlighter#readme",
   "license": "MIT",
   "engines": {
     "vscode": "^1.75.0"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": { "supported": true },
+    "virtualWorkspaces": { "supported": true }
   },
   "categories": [
     "Visualization",
